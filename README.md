@@ -4,6 +4,9 @@ Code for our publication.
 ## Data
 Folder `data` contains generated data used to generate figures and results presented in the paper. The saved data contain Arnold tongues (`arnold_tongues`), phase response curves (`prcs`), and jet lag (`jet_lags`) for three models: the Kim-Forger model (`model01`), limit cycle Van der Pol model (`model01`), and noise-induced Van der Pol model (`model02b`).
 
+## Scripts
+All scripts (folder `scripts`) starting with `script_` can be used to generate Arnold tongues (`script_arnold_tongues.jl`), phase response curves (`script_prcs.jl`), and jet lag experiments (`script_jet_lag.jl`) for the models fromn the paper.
+
 ## Figures
 All scripts (folder `scripts`) starting with `figure_` generate figures from the paper. The generated figures are automatically stored in folder `figures` as SVG files.
 - `figure01.jl`: Figure 1.
