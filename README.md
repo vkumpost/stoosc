@@ -1,5 +1,5 @@
 # stoosc
-Code for our publication.
+Code for our publication [Noise facilitates entrainment of a population of uncoupled limit cycle oscillators](https://www.biorxiv.org/content/10.1101/2022.03.28.486061v1).
 
 ## Installation
 To install necessery dependencies, start Julia in the project folder and then instantiate the project's package enviroment by running `] activate .` and `] instantiate`.
