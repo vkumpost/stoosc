@@ -1,25 +1,31 @@
 # stoosc
-Code for our publication [Noise facilitates entrainment of a population of uncoupled limit cycle oscillators](https://www.biorxiv.org/content/10.1101/2022.03.28.486061v1).
+Code for our publication Noise facilitates entrainment of a population of uncoupled limit cycle oscillators.
 
 ## Installation
-To install necessery dependencies, start Julia in the project folder and then instantiate the project's package enviroment by running `] activate .` and `] instantiate`.
+To install necessery dependencies, start [Julia](https://julialang.org/) in the project folder and then instantiate the project's package enviroment by running `] activate .` and `] instantiate`. For details on the implemented methods see [OscillatorPopulation](https://github.com/vkumpost/OscillatorPopulation) package.
 
 ## Data
-Folder `data` contains generated data used to generate figures and results presented in the paper. The saved data contain Arnold tongues (`arnold_tongues`), phase response curves (`prcs`), and jet lag (`jet_lags`) for three models: the Kim-Forger model (`model01`), limit cycle Van der Pol model (`model02`), and noise-induced Van der Pol model (`model02b`).
+Folder `outputs` contains generated data used to create figures and results presented in the paper. The saved data contain Arnold tongues (`arnold_tongues`), phase response curves (`phase_response_curves`), and jet lags (`jet_lags`).
 
 ## Scripts
-All scripts (folder `scripts`) starting with `script_` can be used to generate Arnold tongues (`script_arnold_tongues.jl`), phase response curves (`script_prcs.jl`), and jet lag experiments (`script_jet_lag.jl`) for the models from the paper.
+All scripts starting with `estimate_` can be used to estimate Arnold tongues (`estimate_arnold_tongues.jl`), phase response curves (`estimate_phase_response_curves.jl`), and jet lag experiments (`estimate_jet_lags.jl`) for the models from the paper.
 
 ## Figures
-All scripts (folder `scripts`) starting with `figure_` generate figures from the paper. The generated figures are automatically stored in folder `figures` as SVG files.
-- `figure01.jl`: Figure 1.
-- `figure_arnold_tongues_model01.jl`: Figure 2. SI Figures 8, 9, 10.
-- `figure_prcs.jl`: Figure 3. SI Figures 13, 16.
-- `figure_jet_lags.jl`: Figure 4. SI Figure 14.
-- `figure05A.jl`: Figure 5A.
-- `figure_arnold_tongues_model02.jl`: Figure 5B, C. SI Figures 12, 15.
-- `figure_scan_A.jl`: SI Figure 1.
-- `figure_varying_dt.jl`: SI Figure 2.
-- `figure_phase_space_histograms.jl`: SI Figure 3.
-- `figure_arnold_tongues_sde_jump.jl`: SI Figure 4.
-- `figure_arnold_tongues_traces.jl`: SI Figure 5, 6, 7.
+All scripts starting with `figure_` or `si_figure_` generate figures from the paper. The generated figures are automatically stored in folder `figures` as SVG files.
+- `figure_population_size.jl`: Figure 1C.
+- `figure_arnold_tongues.jl`: Figures 2A, 2B; SI Figure 3.
+- `figure_arnold_tongues_population_phase_coherence.jl`: Figure 2C; SI Figure 5.
+- `figure_arnold_tongues_constant_volume.jl`: Figure 2D; SI Figure 6.
+- `figure_phase_response_curves.jl`: Figure 3; SI Figures 11, 14, 18.
+- `figure_jet_lags.jl`: Figure 4; SI Figure 12.
+- `figure_generic_model_traces.jl`: Figure 5A; SI Figure 15.
+- `figure_arnold_tongues_limit_cycle.jl`: Figure 5B; SI Figure 10.
+- `figure_arnold_tongues_noise_induced.jl`: Figure 5C; SI Figure 13.
+- `si_figure_parameter_scan.jl`: SI Figure 1.
+- `si_figure_phase_coherence.jl`: SI Figure 2.
+- `si_figure_population_phase_coherence.jl`: SI Figure 4.
+- `si_figure_arnold_tongues_heterogeneity.jl`: SI Figures 7, 8.
+- `si_figure_arnold_tongues_amplitude_phase.jl`: SI Figures 16, 17.
+- `si_figure_sde_vs_jump_benchmark.jl`: SI Figure 19.
+- `si_figure_integration_step.jl`: SI Figure 20.
+- `si_figure_sde_vs_jump_arnold_tongues.jl`: SI Figure 21.

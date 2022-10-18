@@ -1,77 +1,191 @@
-using stoosc
+using OscillatorPopulation
+using Statistics
+using PyPlot
 rc("font", family="arial")
 
-MODEL = "model01"
+## Kim-Forger model ===========================================================
+I_array = [0.005, 0.015, 0.03]
+σ_array = [0.001, 0.008, 0.015, 0.03]
+color_array = ["gray", "black", "red", "blue"]
 
-if MODEL == "model01"
-    I = "0.02"  # 0.02, 0.05, 0.1
-    σ_string_arr = ["0.001", "0.003", "0.01", "0.03"]
-    title_string = "Reentrainment after jet lag (I = $I)"
-elseif MODEL == "model02"
-    I = "0.5"
-    σ_string_arr = ["0.02", "0.1", "0.15", "0.2"]
-    title_string = "Limit cycle osillator (I = $I)"
-elseif MODEL == "model02b"
-    I = "0.5"
-    σ_string_arr = ["0.02", "0.1", "0.15", "0.2"]
-    title_string = "Noise-induced osillator (I = $I)"
-end
+for I = I_array
+    fig, ax = subplots(figsize=(6, 2.0))
+    for (i, σ) = enumerate(σ_array)
+        df = load_data("./outputs/jet_lags/kim_forger/I=$(I)_σ=$(σ).csv")
 
-phase_diff_mean_arr = []
-phase_diff_std_arr = []
-pre_phase_diff_mean_arr = []
-pre_phase_diff_std_arr = []
-for σ_string in σ_string_arr
-    global phase_diff_mean_arr, phase_diff_std_arr
-    local filename
+        t = df[:, 1]
+        X = Matrix(df[:, 2:end])
+        n = size(X, 1)
+        x = fill(NaN, n)
+        x_std = fill(NaN, n)
+        for ix in 1:n
+            x[ix] = -mean(X[ix, .!isnan.(X[ix, :])])
+            x_std[ix] = std(X[ix, .!isnan.(X[ix, :])])
+        end
 
-    xarr = []
-    pre_xarr = []
+        ax.errorbar(
+            t,
+            x,
+            yerr=x_std,
+            fmt="o",
+            color=color_array[i],
+            label="σ = $(σ)"
+        )
 
-    for i = 1:10
-        filename = "sde_I=$(I)_σ=$(σ_string)_r=$(i).csv"
-        fullfilename = joinpath("jet_lags", MODEL, filename)
-        df = load_data(fullfilename)
-
-        x = (mean(df[:, "pre_phases"]) .- df[:, "post_phases"])
-        push!(xarr, x)
-
-        pre_x = (mean(df[:, "pre_phases"]) .- df[:, "pre_phases"])
-        push!(pre_xarr, pre_x)
     end
 
-    phase_diff_mean = mean(xarr)
-    phase_diff_std = std(xarr)
-
-    push!(phase_diff_mean_arr, phase_diff_mean)
-    push!(phase_diff_std_arr, phase_diff_std)
-
-    pre_phase_diff_mean = mean(pre_xarr)
-    pre_phase_diff_std = std(pre_xarr)
-
-    push!(pre_phase_diff_mean_arr, pre_phase_diff_mean)
-    push!(pre_phase_diff_std_arr, pre_phase_diff_std)
+    ax.plot([-100, 100], [0, 0], "--", color="black")
+    ax.plot([0, 0], [-100, 100], "--", color="black")
+    ax.set_xlim(-5.5, 20.5)
+    ax.set_ylim(-0.1, 0.5)
+    ax.set_xlabel("Days", labelpad=0)
+    ax.set_ylabel("Phase difference (days)", labelpad=0)
+    ax.set_title("Reentrainment after jet lag (I=$(I))", pad=0, loc="left")
+    ax.legend(edgecolor="black", framealpha=1.0, ncol=1, loc=2)
+    fig.tight_layout(pad=0.1)
+    fig.show()
+    save_figure(fig, "./figures/jet_lags/kim_forger_I=$(I).svg")
 
 end
 
 
-colors = ["gray", "black", "red", "blue"]
-fig, ax = subplots(figsize=(6.5, 2.5))
-pre_max = 5
-["σ = 0.03", "σ = 0.01", "σ = 0.003", "σ = 0.001"]
-for i = 1:length(σ_string_arr)
-    ax.errorbar(-pre_max:-1, pre_phase_diff_mean_arr[i][21-pre_max:end], yerr=pre_phase_diff_std_arr[i][21-pre_max:end], fmt="o", color=colors[i], label="σ = $(σ_string_arr[i])")
-    ax.errorbar(1:20, phase_diff_mean_arr[i], yerr=phase_diff_std_arr[i], fmt="o", color=colors[i])
-end
-ax.legend(edgecolor="black", framealpha=1.0, ncol=1, loc=2)
-ax.plot([-pre_max-.5, 20+0.5], [0, 0], color="black", linestyle="--")
-ax.plot([0, 0], [-0.1, 0.5], color="black", linestyle="--")
-ax.set_xlabel("Days")
-ax.set_ylabel("Phase difference (days)")
-ax.set_title(title_string, pad=0.1)
-ax.set_xlim(-5.5, 20.5)
-ax.set_ylim(-0.1, 0.5)
-fig.tight_layout()
+## Van der Pol limit cycle model ==============================================
+I_array = [0.05]
+σ_array = [0.001, 0.06, 0.1]
+color_array = ["black", "red", "blue"]
 
-filename = joinpath("jet_lags", MODEL, "jet_lag_I=$(I).svg")
-save_figure(fig, filename)
+for I = I_array
+    fig, ax = subplots(figsize=(6, 2.0))
+    for (i, σ) = enumerate(σ_array)
+        df = load_data("./outputs/jet_lags/van_der_pol_limit_cycle/I=$(I)_σ=$(σ).csv")
+
+        t = df[:, 1]
+        X = Matrix(df[:, 2:end])
+        n = size(X, 1)
+        x = fill(NaN, n)
+        x_std = fill(NaN, n)
+        for ix in 1:n
+            x[ix] = -mean(X[ix, .!isnan.(X[ix, :])])
+            x_std[ix] = std(X[ix, .!isnan.(X[ix, :])])
+        end
+
+        ax.errorbar(
+            t,
+            x,
+            yerr=x_std,
+            fmt="o",
+            color=color_array[i],
+            label="σ = $(σ)"
+        )
+
+    end
+
+    ax.plot([-100, 100], [0, 0], "--", color="black")
+    ax.plot([0, 0], [-100, 100], "--", color="black")
+    ax.set_xlim(-5.5, 20.5)
+    ax.set_ylim(-0.1, 0.5)
+    ax.set_xlabel("Days", labelpad=0)
+    ax.set_ylabel("Phase difference (days)", labelpad=0)
+    ax.set_title("Relaxation limit cycle oscillator (Van der Pol, I=$(I))", pad=0, loc="left")
+    ax.legend(edgecolor="black", framealpha=1.0, ncol=1, loc=2)
+    fig.tight_layout(pad=0.1)
+    fig.show()
+    save_figure(fig, "./figures/jet_lags/van_der_pol_limit_cycle.svg")
+
+end
+
+## Van der Pol noise-induced ==================================================
+I_array = [0.05]
+σ_array = [0.001, 0.06, 0.1]
+color_array = ["black", "red", "blue"]
+
+for I = I_array
+    fig, ax = subplots(figsize=(6, 2))
+    for (i, σ) = enumerate(σ_array)
+        df = load_data("./outputs/jet_lags/van_der_pol_noise_induced/I=$(I)_σ=$(σ).csv")
+
+        t = df[:, 1]
+        X = Matrix(df[:, 2:end])
+        n = size(X, 1)
+        x = fill(NaN, n)
+        x_std = fill(NaN, n)
+        for ix in 1:n
+            x[ix] = -mean(X[ix, .!isnan.(X[ix, :])])
+            x_std[ix] = std(X[ix, .!isnan.(X[ix, :])])
+        end
+
+        ax.errorbar(
+            t,
+            x,
+            yerr=x_std,
+            fmt="o",
+            color=color_array[i],
+            label="σ = $(σ)"
+        )
+
+    end
+
+    ax.plot([-100, 100], [0, 0], "--", color="black")
+    ax.plot([0, 0], [-100, 100], "--", color="black")
+    ax.set_xlim(-5.5, 20.5)
+    ax.set_ylim(-0.1, 0.5)
+    ax.set_xlabel("Days", labelpad=0)
+    ax.set_ylabel("Phase difference (days)", labelpad=0)
+    ax.set_title("Noise-induced oscillator (Van der Pol, I=$(I))", pad=0, loc="left")
+    ax.legend(edgecolor="black", framealpha=1.0, ncol=1, loc=2)
+    fig.tight_layout(pad=0.1)
+    fig.show()
+    save_figure(fig, "./figures/jet_lags/van_der_pol_noise_induced.svg")
+
+end
+
+## Amplitude-phase model ======================================================
+I_array = [0.3]
+σ_array = [0.25, 0.4, 0.7]
+color_array = ["black", "red", "blue"]
+
+for I = I_array
+    fig, ax = subplots(figsize=(6, 2))
+    for (i, σ) = enumerate(σ_array)
+        df = load_data("./outputs/jet_lags/amplitude_phase/I=$(I)_σ=$(σ).csv")
+
+        t = df[:, 1]
+        X = Matrix(df[:, 2:end])
+        n = size(X, 1)
+        x = fill(NaN, n)
+        x_std = fill(NaN, n)
+        for ix in 1:n
+            x[ix] = -mean(X[ix, .!isnan.(X[ix, :])])
+            # x[ix] = mod(x[ix], 1)
+            if x[ix] < -0.1
+                x[ix] += 1
+            end
+    
+            x_std[ix] = std(X[ix, .!isnan.(X[ix, :])])
+        end
+
+        ax.errorbar(
+            t,
+            x,
+            yerr=x_std,
+            fmt="o",
+            color=color_array[i],
+            label="σ = $(σ)"
+        )
+
+    end
+
+    ax.plot([-100, 100], [0, 0], "--", color="black")
+    ax.plot([0, 0], [-100, 100], "--", color="black")
+    ax.set_xlim(-5.5, 20.5)
+    ax.set_ylim(-0.05, 0.45)
+    # ax.set_ylim(-1, 1)
+    ax.set_xlabel("Days", labelpad=0)
+    ax.set_ylabel("Phase difference (days)", labelpad=0)
+    ax.set_title("Sinusoidal limit cycle oscillator (Amplitude-phase, I=$(I))", pad=0, loc="left")
+    ax.legend(edgecolor="black", framealpha=1.0, ncol=1, loc=2)
+    fig.tight_layout(pad=0.1)
+    fig.show()
+    save_figure(fig, "./figures/jet_lags/amplitude_phase.svg")
+
+end
