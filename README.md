@@ -1,5 +1,5 @@
 # stoosc
-Code for our publication Noise facilitates entrainment of a population of uncoupled limit cycle oscillators.
+Code for our publication [Noise facilitates entrainment of a population of uncoupled limit cycle oscillators](https://doi.org/10.1098/rsif.2022.0781).
 
 ## Installation
 To install necessery dependencies, start [Julia](https://julialang.org/) in the project folder and then instantiate the project's package enviroment by running `] activate .` and `] instantiate`. For details on the implemented methods see [OscillatorPopulation](https://github.com/vkumpost/OscillatorPopulation) package.
